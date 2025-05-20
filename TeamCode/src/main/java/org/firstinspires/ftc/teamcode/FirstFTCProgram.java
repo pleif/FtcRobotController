@@ -119,9 +119,16 @@ public class FirstFTCProgram extends LinearOpMode {
             leftClaw.setPosition(MID_SERVO + clawOffset);
             //rightClaw.setPosition(MID_SERVO - clawOffset);
 
-            if (LiftPower && leftLift.getCurrentPosition() < 1450) {
-                rightLift.setPower(.4);
-                leftLift.setPower(.4);
+            double linearPower = (double)(1450 - leftLift.getCurrentPosition()) /1075;
+            if (LiftPower) {
+                if (leftLift.getCurrentPosition() < 1020){
+                    rightLift.setPower(.4);
+                    leftLift.setPower(.4);
+                }
+                   else if (leftLift.getCurrentPosition() >= 1020) {
+                       rightLift.setPower(linearPower);
+                    leftLift.setPower(linearPower);
+                }
             }
             else if (DownPower && leftLift.getCurrentPosition() > 0) {
                 rightLift.setPower(-.4);
@@ -141,6 +148,7 @@ public class FirstFTCProgram extends LinearOpMode {
             telemetry.addData("right", "%.2f", right);
             telemetry.addData("rightLiftPosition", rightLift.getCurrentPosition());
             telemetry.addData("leftLiftPosition", leftLift.getCurrentPosition());
+            telemetry.addData("linearPower",linearPower);
             telemetry.update();
 
             sleep(50);
