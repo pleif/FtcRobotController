@@ -18,7 +18,7 @@ public class FirstFTCProgram extends LinearOpMode {
     public DcMotor  leftLift  = null;
 
     public Servo leftClaw    = null;
-    public Servo    rightClaw   = null;
+    public Servo rightClaw   = null;
 
     public Servo    dump   = null;
 
