@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
 @Autonomous(name="Robot: Robot1BlueFromWall", group="Robot")
 
-public class Robot1BlueFromWall extends LinearOpMode {
+public class  Robot1BlueFromWall extends LinearOpMode {
 
 
     @Override

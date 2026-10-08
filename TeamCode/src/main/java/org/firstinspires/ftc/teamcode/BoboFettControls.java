@@ -74,14 +74,16 @@ public class BoboFettControls {
         }
 
         if (theOpMode.gamepad2.right_bumper) {
-            JudahBlack.setVelocity(-2300);
+//            JudahBlack.setVelocity(-2300);
+            JudahBlack.setVelocity(-1700);
         }
 
         else if(theOpMode.gamepad2.y || theOpMode.gamepad1.y) {
-            JudahBlack.setVelocity(-1800);
+//            JudahBlack.setVelocity(-1800);
+            //JudahBlack.setVelocity(-1200);
+            JudahBlack.setVelocity(-1500 );
         } else {
-            JudahBlack.setPower(0);
-        }
+            JudahBlack.setPower(0);         }
 
         if (theOpMode.gamepad1.right_bumper ){
             Finger.setPosition(.3);
