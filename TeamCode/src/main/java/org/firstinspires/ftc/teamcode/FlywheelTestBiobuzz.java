@@ -4,12 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 
 
 @TeleOp(name = "FlywheelTestBiobuzz")
@@ -22,20 +16,19 @@ public class FlywheelTestBiobuzz extends LinearOpMode {
     private DcMotor bottomCollection = null;
     private DcMotor topCollection = null;
 
+    private double desiredFlywheelVelocity;
+    private boolean dpadDownPressed = false;
+    private boolean dpadUpPressed = false;
 
-    public FlywheelTestBiobuzz(HardwareMap hardwareMap, OpMode opMode) {
-        Josh = theOpMode.hardwareMap.get(DcMotorEx.class, "Josh");
 
-    }
 
 
     public void teleOpControls() {
 
-
-        if (gamepad2.x || gamepad1.x ) {
+        if (gamepad1.x ) {
             bottomCollection.setPower(-1);
             topCollection.setPower(-1);
-        } else if (gamepad2.left_bumper) {
+        } else if (gamepad1.left_bumper) {
             bottomCollection.setPower(1)
             ;
             topCollection.setPower(.8);
@@ -44,26 +37,45 @@ public class FlywheelTestBiobuzz extends LinearOpMode {
             topCollection.setPower(0);
         }
 
-        if (theOpMode.gamepad1.right_bumper) {
-            Josh.setVelocity(-1500);
-        } else if (theOpMode.gamepad1.dpad_up) {
+        if (gamepad1.right_bumper) {
+            desiredFlywheelVelocity = -1500;
+        } else if (gamepad1.dpad_up && !dpadUpPressed) {
+            telemetry.addData("GamepadEvent","dpadUp");
+            dpadUpPressed = true;
+            desiredFlywheelVelocity -=50;
+            sleep(500);
+        } else if (gamepad1.dpad_down && !dpadDownPressed) {
+            telemetry.addData("GamepadEvent","dpadDown");
+            dpadDownPressed = true;
+            desiredFlywheelVelocity +=50;
+            sleep(500);
+        } else if (gamepad1.b) {
 
-            Josh.setVelocity(Josh.getVelocity() -100);
-        } else if (theOpMode.gamepad1.dpad_down) {
-        Josh.setVelocity(Josh.getVelocity() + 100);
-
+            desiredFlywheelVelocity = 0;
+            dpadUpPressed = false;
+            dpadDownPressed = false;
+        } else {
+            dpadUpPressed = false;
+            dpadDownPressed = false;
+            telemetry.addData("GamepadEvent","NothingPressed");
         }
-        theOpMode.telemetry.addData("currentVelocity", Josh.getVelocity());
+        Josh.setVelocity(desiredFlywheelVelocity);
 
-
-
-
+        telemetry.addData("DesiredVelocity", desiredFlywheelVelocity);
+        telemetry.addData("ActualVelocity", Josh.getVelocity());
+        telemetry.update();
     }
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        teleOpControls();
+        Josh = hardwareMap.get(DcMotorEx.class, "Josh");
+        bottomCollection = hardwareMap.get(DcMotor.class, "BottomCollection");
+        topCollection = hardwareMap.get(DcMotor.class, "TopCollection");
+        waitForStart();
+        while (opModeIsActive()) {
+            teleOpControls();
+        }
     }
 
 
